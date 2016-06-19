@@ -5,6 +5,7 @@
   "src": "src/app.js",
   "assets": [
     "./assets/*/**",
+    "!./assets/css/**",
     "!./assets/scss/**"
   ],
   "js": [

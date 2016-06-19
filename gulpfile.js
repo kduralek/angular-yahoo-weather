@@ -15,9 +15,9 @@ gulp.task('help', plug.taskListing);
 gulp.task('release', function (done) {
     runSequence(
         'clean',
-        'styles',
         'copy-assets',
         'buildjs',
+        'buildcss',
         'buildhtml',
         function () {
             done();
@@ -45,7 +45,6 @@ gulp.task('copy-assets', function () {
 
 gulp.task('buildjs', function () {
     return gulp.src(paths.src)
-
         .pipe(plug.jspm({
             inject: true,
             minify: true,
@@ -55,9 +54,21 @@ gulp.task('buildjs', function () {
         }))
         .pipe(plug.stripDebug())
         .pipe(plug.rev())
-        .pipe(gulp.dest(paths.build))
+        .pipe(gulp.dest(paths.build + 'assets/js'))
         .pipe(plug.rev.manifest())
         .pipe(gulp.dest(paths.build));
+});
+
+gulp.task('buildcss', function () {
+    return gulp.src(paths.css.source)
+        .pipe(plug.sass({
+            precision: 10,
+            outputStyle: 'compressed'
+        }).on('error', plug.sass.logError))
+        .pipe(plug.rev())
+        .pipe(gulp.dest(paths.build + paths.css.targetDir))
+        .pipe(plug.rev.manifest(paths.build + 'rev-manifest.json', {merge: true}))
+        .pipe(gulp.dest(''));
 });
 
 gulp.task('buildhtml', function () {
@@ -65,16 +76,17 @@ gulp.task('buildhtml', function () {
     var manifest = require(paths.build + 'rev-manifest.json');
 
     return gulp.src(paths.html)
+        .pipe(plug.replace('assets/css/styles.css', 'assets/css/' + manifest['styles.css']))
         .pipe(plug.replace('<script type="text/javascript" src="jspm.config.js"></script>', ''))
         .pipe(plug.replace('<script type="text/javascript" src="jspm_packages/system.js"></script>', ''))
-        .pipe(plug.replace('<script type="text/javascript">System.import(\'src/app.js\');', '<script type="text/javascript" src="' + manifest['app.bundle.js'] + '">'))
+        .pipe(plug.replace('<script type="text/javascript">System.import(\'src/app.js\');', '<script type="text/javascript" src="assets/js/' + manifest['app.bundle.js'] + '">'))
         .pipe(gulp.dest(paths.build));
 });
 
 /**
  * serve the dev environment
  */
-gulp.task('serve-dev', function() {
+gulp.task('serve-dev', function () {
     serve({
         mode: 'dev'
     });
@@ -85,7 +97,7 @@ gulp.task('serve-dev', function() {
 /**
  * serve the build environment
  */
-gulp.task('serve-build', function() {
+gulp.task('serve-build', function () {
     serve({
         mode: 'build'
     });
