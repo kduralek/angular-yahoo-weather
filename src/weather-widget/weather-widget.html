@@ -1,0 +1,63 @@
+<header>
+    <div class="header-logo">
+        <a href="http://weather.yahoo.com">
+            <img src="http://l.yimg.com/a/i/brand/purplelogo//uh/us/news-wea.gif" width="142" height="18"
+                 alt="Yahoo! Weather"/>
+        </a>
+    </div>
+
+    <div class="form-group">
+        <label for="cities-list" class="control-label">Please select a city from the listbox below</label>
+        <div class="control-input">
+            <select class="form-control" id="cities-list"
+                    ng-model="$ctrl.model"
+                    ng-options="item.name for item in $ctrl.cities track by item.zipcode">
+                <option value="">--- select a city ---</option>
+            </select>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" ng-class="{'disabled': $ctrl.isLoading}" ng-click="$ctrl.show()">Show weather
+        forecast
+    </button>
+</header>
+
+<article class="details" ng-class="{'disabled': $ctrl.isLoading}" ng-if="$ctrl.details">
+    <h2>{{ $ctrl.details.description }}
+        <small>Current conditions (as of {{ $ctrl.details.item.condition.date }})</small>
+    </h2>
+
+    <div class="conditions">
+        <p>{{ $ctrl.details.item.condition.text }}</p>
+        <i class="wi {{ $ctrl.details.item.condition.code | toIcon}}"></i>
+    </div>
+
+    <ul class="list">
+        <li><span class="label">Feels like</span> <span class="value">{{ $ctrl.details.item.condition.temp }} {{ $ctrl.details.units.temperature }}</span>
+        </li>
+        <li><span class="label">Barometer</span> <span class="value">{{ $ctrl.details.atmosphere.pressure }} {{ $ctrl.details.units.pressure }}</span>
+        </li>
+        <li><span class="label">Humidity</span> <span class="value">{{ $ctrl.details.atmosphere.humidity }} %</span>
+        </li>
+        <li><span class="label">Wind</span> <span class="value">{{ $ctrl.details.wind.speed }} {{ $ctrl.details.units.speed }}</span>
+        </li>
+        <li><span class="label">Visibility</span> <span class="value">{{ $ctrl.details.atmosphere.visibility }} {{ $ctrl.details.units.distance }}</span>
+        </li>
+        <li><span class="label">Sunrise</span> <span class="value">{{ $ctrl.details.astronomy.sunrise }}</span></li>
+        <li><span class="label">Sunset</span> <span class="value">{{ $ctrl.details.astronomy.sunset }}</span></li>
+    </ul>
+
+    <div class="forecast">
+        <h4>Forecast</h4>
+        <table class="table">
+            <tbody>
+            <tr ng-repeat="forecast in $ctrl.details.item.forecast">
+                <td class="date">{{ forecast.date }}</td>
+                <td class="icon"><i class="wi {{ forecast.code | toIcon}}"></i></td>
+                <td class="temp-high">{{ forecast.high }}°</td>
+                <td class="temp-low">{{ forecast.low }}°</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</article>

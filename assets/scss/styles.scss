@@ -1,0 +1,13 @@
+@import 'vendor.bootstrap';
+@import 'vendor.weather-icons';
+
+@import "../../src/weather-widget/weather-widget";
+
+body {
+  color: #333;
+  background-color: #efefef;
+}
+
+.main {
+  padding: 40px 0;
+}

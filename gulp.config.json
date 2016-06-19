@@ -1,0 +1,21 @@
+{
+  "tmp": "./.tmp",
+  "build": "./release/",
+  "html": "./index.html",
+  "src": "src/app.js",
+  "assets": [
+    "./assets/*/**",
+    "!./assets/scss/**"
+  ],
+  "js": [
+    "./app/**/*.js"
+  ],
+  "css": {
+    "source": "./assets/scss/styles.scss",
+    "sourceFiles": [
+      "./assets/scss/**",
+      "./src/*/*.scss"
+    ],
+    "targetDir": "./assets/css/"
+  }
+}
